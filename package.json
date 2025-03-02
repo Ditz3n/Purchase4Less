@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@clerk/clerk-sdk-node": "^5.0.69",
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.1.5",
+    "jwt-decode": "^4.0.0",
+    "shadcn": "^2.1.6"
+  }
+}

@@ -1,0 +1,27 @@
+image: mcr.microsoft.com/dotnet/sdk:8.0
+
+build-and-test:
+  stage: test
+  variables:
+    GIT_STRATEGY: clone
+  script:
+    - 'dotnet clean'
+    - 'dotnet build'
+    - 'dotnet test --logger:"trx;LogFileName=TestResults.trx" --collect:"XPlat Code Coverage" --results-directory TestResults'
+    - 'dotnet tool install --global trx2junit'
+    - 'export PATH="$PATH:/root/.dotnet/tools"'
+    - 'trx2junit TestResults/TestResults.trx'
+    - 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.1.24'
+    - 'reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"coveragereport" || true'
+    - 'cat coveragereport/Summary.txt || true'
+  artifacts:
+    when: always
+    paths:
+      - TestResults/
+      - coveragereport/
+    reports:
+      junit:
+        - TestResults/TestResults.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: TestResults/**/coverage.cobertura.xml
